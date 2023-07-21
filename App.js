@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { Button, StyleSheet, Text, View } from 'react-native';
 import Card from './Card';
 
 const cards = ["😀", "🚀", "🎉", "🍕", "🌈", "🐼"];
@@ -15,13 +15,15 @@ export default function App() {
   useEffect(() => {
     if (selectedCards.length < 2) return
     if (board[selectedCards[0]] === board[selectedCards[1]]) {
-      setMatchedCards([...matchedCards, ...setSelectedCards])
+      setMatchedCards([...matchedCards, ...selectedCards])
       setSelectedCards([])
     } else {
       const timeoutId = setTimeout(() => setSelectedCards([]), 1000)
       return () => clearTimeout(timeoutId)
     }
   }, [selectedCards])
+
+
 
   const HandleTabCard = (index) => {
     if (selectedCards.length >= 2 || selectedCards.includes(index)) return
@@ -31,6 +33,11 @@ export default function App() {
 
   const didPlayerWin = () => matchedCards.length === board.length
 
+  const resetGame = () => {
+    setMatchedCards([])
+    setScore(0)
+    setSelectedCards([])
+  }
 
 
   return (
@@ -47,6 +54,7 @@ export default function App() {
           >{card}</Card>
         })}
       </View>
+      {didPlayerWin() && <Button title="reset" onPress={resetGame} />}
       <StatusBar style="light" />
     </View>
   );
