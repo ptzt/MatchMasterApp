@@ -1,12 +1,13 @@
 import React from 'react';
-import { View, StyleSheet, Button } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 const Menu = ({ onStartGame, onToggleSound, onExit }) => {
     return (
         <View style={styles.menuContainer}>
-            <Button title="Start Game" onPress={onStartGame} />
-            <Button title="Options" onPress={onToggleSound} />
-            <Button title="Exit" onPress={onExit} />
+            <Text style={styles.title}>Match Masters</Text>
+            <TouchableOpacity onPress={onStartGame} style={styles.button}><Text style={styles.text}>Start Game</Text></TouchableOpacity>
+            <TouchableOpacity onPress={onToggleSound} style={styles.button}><Text style={styles.text}>Options</Text></TouchableOpacity>
+            <TouchableOpacity onPress={onExit} style={styles.button}><Text style={styles.text}>Exit</Text></TouchableOpacity>
         </View>
     );
 };
@@ -17,6 +18,24 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    button: {
+        padding: 10, // Agregar padding para dar espacio entre el borde y el texto
+        borderWidth: 10,
+        borderColor: '#334155',
+        borderRadius: 25,
+        marginBottom: 10, // Agregar margen inferior para separar los botones
+    },
+    text: {
+        color: 'white',
+        fontSize: 30,
+        fontWeight: '900',
+    },
+    title: {
+        fontSize: 40,
+        color: 'white',
+        fontWeight: 'bold',
+        marginBottom: 20
+    }
 });
 
 export default Menu;

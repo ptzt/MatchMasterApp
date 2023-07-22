@@ -182,7 +182,7 @@ export default function App() {
       {isGameStarted ? (
         <View style={styles.container}>
           {didPlayerWin() && <EmojiRain emoji="🎉" count={50} />}
-          <Text style={styles.title}>{didPlayerWin() ? 'Congratulations 🎉' : 'MatchMaster'}</Text>
+          <Text style={styles.title}>{didPlayerWin() ? 'Congratulations 🎉' : ''}</Text>
           <Text style={styles.subtitle}>Movements: {score}</Text>
           <Board
             key={isGameStarted}
