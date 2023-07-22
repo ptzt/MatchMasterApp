@@ -19,12 +19,20 @@ export default function App() {
   const [score, setScore] = useState(0)
   const [isLoading, setIsLoading] = useState(true);
   const [sound, setSound] = useState()
+  const [winSound, setWinSound] = useState()
+  const [isPlayerWin, setIsPlayerWin] = useState(false);
 
-
+  // Sonidos
   async function playSound() {
-    const { sound } = await Audio.Sound.createAsync(require('./assets/sounds/pop2.mp3')
-    );
+    const { sound } = await Audio.Sound.createAsync(require('./assets/sounds/pop2.mp3'));
     setSound(sound);
+
+    await sound.playAsync();
+  }
+
+  async function playSound2() {
+    const { sound } = await Audio.Sound.createAsync(require('./assets/sounds/win.mp3'));
+    setWinSound(sound); // Aquí también, cambia "winSound" por "sound"
 
     await sound.playAsync();
   }
@@ -38,11 +46,25 @@ export default function App() {
   }, [sound]);
 
   useEffect(() => {
+    return winSound
+      ? () => {
+        winSound.unloadAsync();
+      }
+      : undefined;
+  }, [winSound]);
+
+
+
+
+
+  // Logica del juego
+  useEffect(() => {
     if (selectedCards.length < 2) return
     if (board[selectedCards[0]] === board[selectedCards[1]]) {
       setMatchedCards([...matchedCards, ...selectedCards])
       setSelectedCards([])
       playSound()
+
     } else {
       const timeoutId = setTimeout(() => setSelectedCards([]), 1000)
       return () => clearTimeout(timeoutId)
@@ -59,8 +81,18 @@ export default function App() {
     Vibration.vibrate(150)
   }
 
+  //Comprobacion de si el jugador gano
   const didPlayerWin = () => matchedCards.length === board.length
 
+  useEffect(() => {
+    if (matchedCards.length === board.length) {
+      setIsPlayerWin(true);
+      playSound2(); // Llama al sonido de victoria cuando el jugador gane
+    }
+  }, [matchedCards]);
+
+
+  //onPress del reset
   const resetGame = () => {
     setMatchedCards([])
     setScore(0)
@@ -70,8 +102,10 @@ export default function App() {
     Vibration.vibrate(150)
   }
 
+
+
+  //Simula pantalla de carga
   useEffect(() => {
-    // Simula un tiempo de carga para la pantalla de carga
     setTimeout(() => {
       setIsLoading(false);
     }, 3000); // Puedes ajustar el tiempo de carga aquí (3 segundos en este ejemplo)
@@ -80,6 +114,9 @@ export default function App() {
   if (isLoading) {
     return <SplashScreen />; // Si isLoading es true, muestra la pantalla de carga
   }
+
+
+
 
 
   return (
@@ -100,7 +137,6 @@ export default function App() {
         })}
       </View>
       {didPlayerWin() && <TouchableOpacity onPress={resetGame} style={styles.resetContainer} ><Text style={styles.reset}>reset</Text></TouchableOpacity>}
-      {/* <TouchableOpacity onPress={resetGame} style={styles.resetContainer} ><Text style={styles.reset}>reset</Text></TouchableOpacity> */}
       <StatusBar style="light" />
     </View>
   );
