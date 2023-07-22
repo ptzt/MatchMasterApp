@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { Button, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { EmojiRain } from 'react-native-emoji-rain'
 import Card from './Card';
 
 const cards = ["😀", "🚀", "🎉", "🍕", "🌈", "🐼"];
@@ -43,8 +44,9 @@ export default function App() {
 
   return (
     <View style={styles.container}>
+      {didPlayerWin() && <EmojiRain emoji="🎉" count={50} />}
       <Text style={styles.title}>{didPlayerWin() ? 'Congratulations 🎉' : 'MatchMaster'}</Text>
-      <Text style={styles.title}>Movements: {score}</Text>
+      <Text style={styles.subtitle}>Movements: {score}</Text>
       <View style={styles.board}>
         {board.map((card, index) => {
           const isTurnedOver = selectedCards.includes(index) || matchedCards.includes(index)
@@ -57,8 +59,8 @@ export default function App() {
           >{card}</Card>
         })}
       </View>
-      {didPlayerWin() && <Button title="reset" onPress={resetGame} />}
-      {/* <Button title="reset" onPress={resetGame} /> */}
+      {didPlayerWin() && <TouchableOpacity title="reset" style={styles.reset} onPress={resetGame} />}
+      <TouchableOpacity onPress={resetGame} style={styles.resetContainer} ><Text style={styles.reset}>reset</Text></TouchableOpacity>
       <StatusBar style="light" />
     </View>
   );
@@ -76,10 +78,29 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 900
   },
+  subtitle: {
+    fontSize: 24,
+    color: 'white',
+    fontWeight: 900
+  },
   board: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center'
+  },
+  resetContainer: {
+    backgroundColor: "#009688",
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    marginTop: 20
+  },
+  reset: {
+    fontSize: 18,
+    color: "#fff",
+    fontWeight: "bold",
+    alignSelf: "center",
+    textTransform: "uppercase"
   }
 });
 
