@@ -1,5 +1,4 @@
-import * as React from 'react'
-import { Pressable, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { Text, StyleSheet, TouchableOpacity } from 'react-native'
 
 const Card = ({ onPress, isTurnedOver, children, isMatched }) => {
 

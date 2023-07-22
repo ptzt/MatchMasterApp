@@ -7,7 +7,7 @@ import { Audio } from 'expo-av';
 
 import ResetButton from './components/ResetButton';
 import SplashScreen from './components/SplashScreen';
-import Card from './components/Card';
+import Board from './components/Board';
 
 const cards = ["😀", "🚀", "🎉", "🍕", "🌈", "🐼"];
 
@@ -124,18 +124,12 @@ export default function App() {
       {didPlayerWin() && <EmojiRain emoji="🎉" count={50} />}
       <Text style={styles.title}>{didPlayerWin() ? 'Congratulations 🎉' : 'MatchMaster'}</Text>
       <Text style={styles.subtitle}>Movements: {score}</Text>
-      <View style={styles.board}>
-        {board.map((card, index) => {
-          const isTurnedOver = selectedCards.includes(index) || matchedCards.includes(index)
-          const isMatched = matchedCards.includes(index)
-          return <Card
-            key={index}
-            isTurnedOver={isTurnedOver}
-            onPress={() => HandleTabCard(index)}
-            isMatched={isMatched}
-          >{card}</Card>
-        })}
-      </View>
+      <Board
+        board={board}
+        selectedCards={selectedCards}
+        matchedCards={matchedCards}
+        HandleTabCard={HandleTabCard}
+      />
       {didPlayerWin() && <ResetButton onPress={resetGame} />}
       <StatusBar style="light" />
     </View>
@@ -158,12 +152,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: 'white',
     fontWeight: 900
-  },
-  board: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center'
-  },
+  }
 });
 
 function shuffle(array) {
