@@ -197,8 +197,6 @@ export default function App() {
             selectedCards={selectedCards}
             matchedCards={matchedCards}
             HandleTabCard={HandleTabCard}
-            didPlayerWin={didPlayerWin}
-            resetGame={resetGame}
           />
           {didPlayerWin() && <ResetButton onPress={resetGame} />}
           <StatusBar style="light" />
