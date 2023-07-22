@@ -5,6 +5,9 @@ import { EmojiRain } from 'react-native-emoji-rain'
 import Card from './components/Card';
 import SplashScreen from './components/SplashScreen';
 import { Vibration } from 'react-native';
+import { Audio } from 'expo-av';
+
+
 
 const cards = ["😀", "🚀", "🎉", "🍕", "🌈", "🐼"];
 
@@ -15,12 +18,31 @@ export default function App() {
   const [matchedCards, setMatchedCards] = useState([])
   const [score, setScore] = useState(0)
   const [isLoading, setIsLoading] = useState(true);
+  const [sound, setSound] = useState()
+
+
+  async function playSound() {
+    const { sound } = await Audio.Sound.createAsync(require('./assets/sounds/pop2.mp3')
+    );
+    setSound(sound);
+
+    await sound.playAsync();
+  }
+
+  useEffect(() => {
+    return sound
+      ? () => {
+        sound.unloadAsync();
+      }
+      : undefined;
+  }, [sound]);
 
   useEffect(() => {
     if (selectedCards.length < 2) return
     if (board[selectedCards[0]] === board[selectedCards[1]]) {
       setMatchedCards([...matchedCards, ...selectedCards])
       setSelectedCards([])
+      playSound()
     } else {
       const timeoutId = setTimeout(() => setSelectedCards([]), 1000)
       return () => clearTimeout(timeoutId)
@@ -31,7 +53,8 @@ export default function App() {
     if (selectedCards.length >= 2 || selectedCards.includes(index)) return
     setSelectedCards([...selectedCards, index])
     setScore(score + 1)
-
+    if (selectedCards.length === 1) {
+    }
     //Vibracion cuando se toca una tab
     Vibration.vibrate(150)
   }
@@ -50,7 +73,7 @@ export default function App() {
   useEffect(() => {
     // Simula un tiempo de carga para la pantalla de carga
     setTimeout(() => {
-      setIsLoading(false); // Cuando termina el tiempo de carga, establece isLoading en false
+      setIsLoading(false);
     }, 3000); // Puedes ajustar el tiempo de carga aquí (3 segundos en este ejemplo)
   }, []);
 
