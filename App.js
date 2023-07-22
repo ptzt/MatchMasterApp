@@ -63,8 +63,11 @@ export default function App() {
   };
 
   const handleExit = () => {
-    // Coloca aquí cualquier lógica que necesites antes de salir de la app
-    setIsGameStarted(false); // Cambia el estado para indicar que el juego ha terminado y se debe volver al menú
+    setMatchedCards([])
+    setScore(0)
+    setSelectedCards([])
+    setBoard(shuffle([...cards, ...cards]));
+    setIsGameStarted(false); // Cambia el estado para indicar que el juego ha terminado y se debe volver al menú y se reinicia el board al salir al menu
   };
 
 
@@ -136,15 +139,6 @@ export default function App() {
     Vibration.vibrate(150)
   }
 
-  const handleBackToMenu = () => {
-    // Coloca aquí cualquier lógica necesaria para volver al menú
-    setIsGameStarted(false); // Cambia el estado para indicar que el juego ha terminado y se debe volver al menú
-    setBoard(shuffle([...cards, ...cards])); // Resetea el tablero
-    setSelectedCards([]); // Resetea las cartas seleccionadas
-    setMatchedCards([]); // Resetea las cartas emparejadas
-    setScore(0);
-  };
-
   const handleExitConfirmation = () => {
     setShowConfirmation(true);
   };
@@ -153,7 +147,6 @@ export default function App() {
   const handleCancelExit = () => {
     setShowConfirmation(false);
   };
-
 
   // Función para confirmar la salida
   const handleConfirmExit = () => {
