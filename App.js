@@ -5,9 +5,11 @@ import { EmojiRain } from 'react-native-emoji-rain'
 import { Vibration } from 'react-native';
 import { Audio } from 'expo-av';
 
+
 import ResetButton from './components/ResetButton';
 import SplashScreen from './components/SplashScreen';
 import Board from './components/Board';
+import Menu from './components/Menu';
 
 const cards = ["😀", "🚀", "🎉", "🍕", "🌈", "🐼"];
 
@@ -21,6 +23,7 @@ export default function App() {
   const [sound, setSound] = useState()
   const [winSound, setWinSound] = useState()
   const [isPlayerWin, setIsPlayerWin] = useState(false);
+  const [isGameStarted, setIsGameStarted] = useState(false); // Estado para controlar si el juego ha comenzado
 
   // Sonidos
   async function playSound() {
@@ -54,6 +57,23 @@ export default function App() {
   }, [winSound]);
 
 
+  // Función para entrar a las opciones
+  const toggleSound = () => {
+    Alert.alert('Enter options')
+  };
+
+  // Función para salir de la app
+  const handleExit = () => {
+    // Coloca aquí cualquier lógica que necesites antes de salir de la app
+    Alert.alert('Exiting the app');
+  };
+
+  // Función para iniciar el juego
+  const handlePlay = () => {
+    // Coloca aquí cualquier lógica para iniciar el juego
+    console.log('Starting the game');
+    setIsGameStarted(true);
+  };
 
 
 
@@ -102,6 +122,12 @@ export default function App() {
     Vibration.vibrate(150)
   }
 
+  const handleBackToMenu = () => {
+    // Coloca aquí cualquier lógica necesaria para volver al menú
+    console.log('Going back to menu');
+    setIsGameStarted(false); // Cambia el estado para indicar que el juego ha terminado y se debe volver al menú
+  };
+
 
 
   //Simula pantalla de carga
@@ -121,17 +147,35 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      {didPlayerWin() && <EmojiRain emoji="🎉" count={50} />}
-      <Text style={styles.title}>{didPlayerWin() ? 'Congratulations 🎉' : 'MatchMaster'}</Text>
-      <Text style={styles.subtitle}>Movements: {score}</Text>
-      <Board
-        board={board}
-        selectedCards={selectedCards}
-        matchedCards={matchedCards}
-        HandleTabCard={HandleTabCard}
-      />
-      {didPlayerWin() && <ResetButton onPress={resetGame} />}
-      <StatusBar style="light" />
+
+      {isGameStarted && (
+        <TouchableOpacity onPress={handleBackToMenu} style={styles.exitButton}>
+          <Text style={styles.exitButtonText}>X</Text>
+        </TouchableOpacity>
+      )}
+
+
+      {isGameStarted ? (
+        <View style={styles.container}>
+          {didPlayerWin() && <EmojiRain emoji="🎉" count={50} />}
+          <Text style={styles.title}>{didPlayerWin() ? 'Congratulations 🎉' : 'MatchMaster'}</Text>
+          <Text style={styles.subtitle}>Movements: {score}</Text>
+          <Board
+            board={board}
+            selectedCards={selectedCards}
+            matchedCards={matchedCards}
+            HandleTabCard={HandleTabCard}
+          />
+          {didPlayerWin() && <ResetButton onPress={resetGame} />}
+          <StatusBar style="light" />
+        </View>
+      ) : (
+        <Menu
+          onStartGame={handlePlay}
+          onToggleSound={toggleSound}
+          onExit={handleExit}
+        />
+      )}
     </View>
   );
 }
@@ -152,7 +196,24 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: 'white',
     fontWeight: 900
-  }
+  },
+  exitButton: {
+    position: 'absolute',
+    top: 50,
+    right: 20,
+    zIndex: 1,
+    backgroundColor: '#FF0000',
+    width: 50,
+    height: 50,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  exitButtonText: {
+    color: '#FFFFFF',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
 });
 
 function shuffle(array) {
