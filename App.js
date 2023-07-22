@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Button, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { EmojiRain } from 'react-native-emoji-rain'
-import Card from './components/Card';
-import SplashScreen from './components/SplashScreen';
 import { Vibration } from 'react-native';
 import { Audio } from 'expo-av';
 
-
+import ResetButton from './components/ResetButton';
+import SplashScreen from './components/SplashScreen';
+import Card from './components/Card';
 
 const cards = ["😀", "🚀", "🎉", "🍕", "🌈", "🐼"];
 
@@ -136,7 +136,7 @@ export default function App() {
           >{card}</Card>
         })}
       </View>
-      {didPlayerWin() && <TouchableOpacity onPress={resetGame} style={styles.resetContainer} ><Text style={styles.reset}>reset</Text></TouchableOpacity>}
+      {didPlayerWin() && <ResetButton onPress={resetGame} />}
       <StatusBar style="light" />
     </View>
   );
@@ -164,20 +164,6 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'center'
   },
-  resetContainer: {
-    backgroundColor: "#009688",
-    borderRadius: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    marginTop: 20
-  },
-  reset: {
-    fontSize: 18,
-    color: "#fff",
-    fontWeight: "bold",
-    alignSelf: "center",
-    textTransform: "uppercase"
-  }
 });
 
 function shuffle(array) {
