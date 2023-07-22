@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Pressable, Text, StyleSheet } from 'react-native'
+import { Pressable, Text, StyleSheet, TouchableOpacity } from 'react-native'
 
 const Card = ({ onPress, isTurnedOver, children, isMatched }) => {
 
@@ -10,13 +10,13 @@ const Card = ({ onPress, isTurnedOver, children, isMatched }) => {
     };
 
     return (
-        <Pressable onPress={handlePress} style={isTurnedOver ? styles.cardUp : styles.cardDown}>
+        <TouchableOpacity onPress={handlePress} style={isTurnedOver ? styles.cardUp : styles.cardDown}>
             {isTurnedOver ? (
                 <Text style={styles.text}>{children}</Text>
             ) : (
                 <Text style={styles.text}>?</Text>
             )}
-        </Pressable>
+        </TouchableOpacity>
     )
 }
 
