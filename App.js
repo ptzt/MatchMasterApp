@@ -37,6 +37,7 @@ export default function App() {
     setMatchedCards([])
     setScore(0)
     setSelectedCards([])
+    setBoard(shuffle([...cards, ...cards]));
   }
 
 
@@ -80,10 +81,10 @@ const styles = StyleSheet.create({
 });
 
 function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const randomIndex = Math.floor(Math.random() * (i + 1))
-
-    [array[i], array[randomIndex]] = [array[randomIndex], array[i]]
+  const shuffledArray = [...array];
+  for (let i = shuffledArray.length - 1; i > 0; i--) {
+    const randomIndex = Math.floor(Math.random() * (i + 1));
+    [shuffledArray[i], shuffledArray[randomIndex]] = [shuffledArray[randomIndex], shuffledArray[i]];
   }
-  return array
+  return shuffledArray;
 }
