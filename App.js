@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Button, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Modal, Alert, BackHandler } from 'react-native';
 import { EmojiRain } from 'react-native-emoji-rain'
 import { Vibration } from 'react-native';
 import { Audio } from 'expo-av';
-
 
 import ResetButton from './components/ResetButton';
 import SplashScreen from './components/SplashScreen';
@@ -24,6 +23,7 @@ export default function App() {
   const [winSound, setWinSound] = useState()
   const [isPlayerWin, setIsPlayerWin] = useState(false);
   const [isGameStarted, setIsGameStarted] = useState(false); // Estado para controlar si el juego ha comenzado
+  const [showConfirmation, setShowConfirmation] = useState(false); // Estado para controlar la visualización del modal de confirmación
 
   // Sonidos
   async function playSound() {
@@ -62,11 +62,25 @@ export default function App() {
     Alert.alert('Enter options')
   };
 
-  // Función para salir de la app
   const handleExit = () => {
     // Coloca aquí cualquier lógica que necesites antes de salir de la app
-    Alert.alert('Exiting the app');
+    setIsGameStarted(false); // Cambia el estado para indicar que el juego ha terminado y se debe volver al menú
   };
+
+
+  // Función para salir de la app
+  const handleExitApp = () => {
+    BackHandler.exitApp();
+    return true;
+  };
+
+  useEffect(() => {
+    // Agregar el listener del evento cuando el componente se monta
+    BackHandler.addEventListener('hardwareBackPress', handleExitApp);
+
+    // Remover el listener del evento cuando el componente se desmonta
+    return () => BackHandler.removeEventListener('hardwareBackPress', handleExitApp);
+  }, []);
 
   // Función para iniciar el juego
   const handlePlay = () => {
@@ -124,11 +138,28 @@ export default function App() {
 
   const handleBackToMenu = () => {
     // Coloca aquí cualquier lógica necesaria para volver al menú
-    console.log('Going back to menu');
     setIsGameStarted(false); // Cambia el estado para indicar que el juego ha terminado y se debe volver al menú
+    setBoard(shuffle([...cards, ...cards])); // Resetea el tablero
+    setSelectedCards([]); // Resetea las cartas seleccionadas
+    setMatchedCards([]); // Resetea las cartas emparejadas
+    setScore(0);
+  };
+
+  const handleExitConfirmation = () => {
+    setShowConfirmation(true);
+  };
+
+  // Función para cancelar la salida (cerrar el modal)
+  const handleCancelExit = () => {
+    setShowConfirmation(false);
   };
 
 
+  // Función para confirmar la salida
+  const handleConfirmExit = () => {
+    handleCancelExit(); // Cierra el modal antes de salir de la app
+    handleExit(); // Sale de la app
+  };
 
   //Simula pantalla de carga
   useEffect(() => {
@@ -149,7 +180,7 @@ export default function App() {
     <View style={styles.container}>
 
       {isGameStarted && (
-        <TouchableOpacity onPress={handleBackToMenu} style={styles.exitButton}>
+        <TouchableOpacity onPress={handleExitConfirmation} style={styles.exitButton}>
           <Text style={styles.exitButtonText}>X</Text>
         </TouchableOpacity>
       )}
@@ -161,10 +192,13 @@ export default function App() {
           <Text style={styles.title}>{didPlayerWin() ? 'Congratulations 🎉' : 'MatchMaster'}</Text>
           <Text style={styles.subtitle}>Movements: {score}</Text>
           <Board
+            key={isGameStarted}
             board={board}
             selectedCards={selectedCards}
             matchedCards={matchedCards}
             HandleTabCard={HandleTabCard}
+            didPlayerWin={didPlayerWin}
+            resetGame={resetGame}
           />
           {didPlayerWin() && <ResetButton onPress={resetGame} />}
           <StatusBar style="light" />
@@ -173,10 +207,32 @@ export default function App() {
         <Menu
           onStartGame={handlePlay}
           onToggleSound={toggleSound}
-          onExit={handleExit}
+          onExit={handleExitApp}
         />
       )}
+
+      {/* Modal de confirmacion proximo a modularizar*/}
+      <Modal
+        visible={showConfirmation}
+        transparent
+        animationType="fade"
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>¿Seguro que deseas volver al menú?</Text>
+            <View style={styles.modalButtonsContainer}>
+              <TouchableOpacity onPress={handleCancelExit} style={styles.modalButton}>
+                <Text style={styles.modalButtonText}>Cancelar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleConfirmExit} style={styles.modalButton}>
+                <Text style={styles.modalButtonText}>Confirmar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
+
   );
 }
 
@@ -199,7 +255,7 @@ const styles = StyleSheet.create({
   },
   exitButton: {
     position: 'absolute',
-    top: 50,
+    top: 35,
     right: 20,
     zIndex: 1,
     backgroundColor: '#FF0000',
@@ -212,6 +268,36 @@ const styles = StyleSheet.create({
   exitButtonText: {
     color: '#FFFFFF',
     fontSize: 20,
+    fontWeight: 'bold',
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalText: {
+    fontSize: 18,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  modalButtonsContainer: {
+    flexDirection: 'row',
+  },
+  modalButton: {
+    padding: 10,
+    marginHorizontal: 10,
+    backgroundColor: '#009688',
+    borderRadius: 5,
+  },
+  modalButtonText: {
+    color: 'white',
     fontWeight: 'bold',
   },
 });

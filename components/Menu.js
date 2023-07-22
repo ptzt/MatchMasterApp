@@ -5,7 +5,7 @@ const Menu = ({ onStartGame, onToggleSound, onExit }) => {
     return (
         <View style={styles.menuContainer}>
             <Button title="Start Game" onPress={onStartGame} />
-            <Button title="Toggle Sound" onPress={onToggleSound} />
+            <Button title="Options" onPress={onToggleSound} />
             <Button title="Exit" onPress={onExit} />
         </View>
     );
