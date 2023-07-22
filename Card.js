@@ -1,9 +1,16 @@
 import * as React from 'react'
 import { Pressable, Text, StyleSheet } from 'react-native'
 
-const Card = ({ onPress, isTurnedOver, children }) => {
+const Card = ({ onPress, isTurnedOver, children, isMatched }) => {
+
+    const handlePress = () => {
+        if (!isMatched) {
+            onPress();
+        }
+    };
+
     return (
-        <Pressable onPress={onPress} style={isTurnedOver ? styles.cardUp : styles.cardDown}>
+        <Pressable onPress={handlePress} style={isTurnedOver ? styles.cardUp : styles.cardDown}>
             {isTurnedOver ? (
                 <Text style={styles.text}>{children}</Text>
             ) : (

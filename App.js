@@ -48,14 +48,17 @@ export default function App() {
       <View style={styles.board}>
         {board.map((card, index) => {
           const isTurnedOver = selectedCards.includes(index) || matchedCards.includes(index)
+          const isMatched = matchedCards.includes(index)
           return <Card
             key={index}
             isTurnedOver={isTurnedOver}
             onPress={() => HandleTabCard(index)}
+            isMatched={isMatched}
           >{card}</Card>
         })}
       </View>
       {didPlayerWin() && <Button title="reset" onPress={resetGame} />}
+      {/* <Button title="reset" onPress={resetGame} /> */}
       <StatusBar style="light" />
     </View>
   );
