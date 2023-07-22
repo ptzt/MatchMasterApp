@@ -4,7 +4,7 @@ import { Button, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { EmojiRain } from 'react-native-emoji-rain'
 import Card from './components/Card';
 import SplashScreen from './components/SplashScreen';
-
+import { Vibration } from 'react-native';
 
 const cards = ["😀", "🚀", "🎉", "🍕", "🌈", "🐼"];
 
@@ -31,6 +31,9 @@ export default function App() {
     if (selectedCards.length >= 2 || selectedCards.includes(index)) return
     setSelectedCards([...selectedCards, index])
     setScore(score + 1)
+
+    //Vibracion cuando se toca una tab
+    Vibration.vibrate(150)
   }
 
   const didPlayerWin = () => matchedCards.length === board.length
@@ -40,6 +43,8 @@ export default function App() {
     setScore(0)
     setSelectedCards([])
     setBoard(shuffle([...cards, ...cards]));
+
+    Vibration.vibrate(150)
   }
 
   useEffect(() => {
@@ -71,8 +76,8 @@ export default function App() {
           >{card}</Card>
         })}
       </View>
-      {didPlayerWin() && <TouchableOpacity title="reset" style={styles.reset} onPress={resetGame} />}
-      <TouchableOpacity onPress={resetGame} style={styles.resetContainer} ><Text style={styles.reset}>reset</Text></TouchableOpacity>
+      {didPlayerWin() && <TouchableOpacity onPress={resetGame} style={styles.resetContainer} ><Text style={styles.reset}>reset</Text></TouchableOpacity>}
+      {/* <TouchableOpacity onPress={resetGame} style={styles.resetContainer} ><Text style={styles.reset}>reset</Text></TouchableOpacity> */}
       <StatusBar style="light" />
     </View>
   );
