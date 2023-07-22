@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Button, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { EmojiRain } from 'react-native-emoji-rain'
-import Card from './Card';
+import Card from './components/Card';
+import SplashScreen from './components/SplashScreen';
+
 
 const cards = ["😀", "🚀", "🎉", "🍕", "🌈", "🐼"];
 
@@ -12,6 +14,7 @@ export default function App() {
   const [selectedCards, setSelectedCards] = useState([])
   const [matchedCards, setMatchedCards] = useState([])
   const [score, setScore] = useState(0)
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (selectedCards.length < 2) return
@@ -23,8 +26,6 @@ export default function App() {
       return () => clearTimeout(timeoutId)
     }
   }, [selectedCards])
-
-
 
   const HandleTabCard = (index) => {
     if (selectedCards.length >= 2 || selectedCards.includes(index)) return
@@ -39,6 +40,17 @@ export default function App() {
     setScore(0)
     setSelectedCards([])
     setBoard(shuffle([...cards, ...cards]));
+  }
+
+  useEffect(() => {
+    // Simula un tiempo de carga para la pantalla de carga
+    setTimeout(() => {
+      setIsLoading(false); // Cuando termina el tiempo de carga, establece isLoading en false
+    }, 3000); // Puedes ajustar el tiempo de carga aquí (3 segundos en este ejemplo)
+  }, []);
+
+  if (isLoading) {
+    return <SplashScreen />; // Si isLoading es true, muestra la pantalla de carga
   }
 
 
