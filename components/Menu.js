@@ -5,9 +5,9 @@ const Menu = ({ onStartGame, onToggleSound, onExit }) => {
     return (
         <View style={styles.menuContainer}>
             <Text style={styles.title}>Match Masters</Text>
-            <TouchableOpacity onPress={onStartGame} style={styles.button}><Text style={styles.text}>Start Game</Text></TouchableOpacity>
-            <TouchableOpacity onPress={onToggleSound} style={styles.button}><Text style={styles.text}>Options</Text></TouchableOpacity>
-            <TouchableOpacity onPress={onExit} style={styles.button}><Text style={styles.text}>Exit</Text></TouchableOpacity>
+            <TouchableOpacity onPress={onStartGame} style={styles.button}><Text style={styles.text}>Jugar</Text></TouchableOpacity>
+            <TouchableOpacity onPress={onToggleSound} style={styles.button}><Text style={styles.text}>Opciones</Text></TouchableOpacity>
+            <TouchableOpacity onPress={onExit} style={styles.button}><Text style={styles.text}>Salir</Text></TouchableOpacity>
         </View>
     );
 };

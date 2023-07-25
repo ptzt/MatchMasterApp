@@ -10,20 +10,40 @@ import SplashScreen from './components/SplashScreen';
 import Board from './components/Board';
 import Menu from './components/Menu';
 
-const cards = ["😀", "🚀", "🎉", "🍕", "🌈", "🐼"];
+const cards = ["😀", "🚀", "🎉", "🍕", "🌈", "🐼", "🍔", "🌟", "🍦", "🍭", "🎈", "🎲", "🎸", "🎁", "🍩", "🐶", "🍿", "🎮", "🏓", "🎯", "🍺"];
+//21 emojis
+
+const difficulties = {
+  easy: {
+    name: 'Fácil',
+    cardCount: 6,
+  },
+  normal: {
+    name: 'Normal',
+    cardCount: 8,
+  },
+  hard: {
+    name: 'Difícil',
+    cardCount: 12,
+  },
+};
 
 
 export default function App() {
   const [board, setBoard] = useState(() => shuffle([...cards, ...cards]))
+  const [modalVisible, setModalVisible] = useState(false)
+  const [selectedDifficulty, setSelectedDifficulty] = useState('easy')
   const [selectedCards, setSelectedCards] = useState([])
   const [matchedCards, setMatchedCards] = useState([])
   const [score, setScore] = useState(0)
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true)
   const [sound, setSound] = useState()
   const [winSound, setWinSound] = useState()
-  const [isPlayerWin, setIsPlayerWin] = useState(false);
-  const [isGameStarted, setIsGameStarted] = useState(false); // Estado para controlar si el juego ha comenzado
-  const [showConfirmation, setShowConfirmation] = useState(false); // Estado para controlar la visualización del modal de confirmación
+  const [isPlayerWin, setIsPlayerWin] = useState(false)
+  const [isGameStarted, setIsGameStarted] = useState(false) // Estado para controlar si el juego ha comenzado
+  const [showConfirmation, setShowConfirmation] = useState(false) // Estado para controlar la visualización del modal de confirmación
+
+
 
   // Sonidos
   async function playSound() {
@@ -88,10 +108,16 @@ export default function App() {
   // Función para iniciar el juego
   const handlePlay = () => {
     // Coloca aquí cualquier lógica para iniciar el juego
-    console.log('Starting the game');
-    setIsGameStarted(true);
+    setModalVisible(true)
+    // setIsGameStarted(true);
   };
 
+  const handleStartGame = (difficulty) => {
+    setSelectedDifficulty(difficulty)
+    setBoard(shuffle(cards.slice(0, difficulties[difficulty].cardCount).concat(cards.slice(0, difficulties[difficulty].cardCount))))
+    setIsGameStarted(true)
+    setModalVisible(false)
+  }
 
 
   // Logica del juego
@@ -131,16 +157,25 @@ export default function App() {
 
   //onPress del reset
   const resetGame = () => {
+    resetGameWithDifficulty(selectedDifficulty)
+    Vibration.vibrate(150)
+  }
+
+  const resetGameWithDifficulty = (difficulty) => {
     setMatchedCards([])
     setScore(0)
     setSelectedCards([])
-    setBoard(shuffle([...cards, ...cards]));
+    setBoard(shuffle(cards.slice(0, difficulties[difficulty].cardCount).concat(cards.slice(0, difficulties[difficulty].cardCount))));
+    setIsPlayerWin(false)
 
-    Vibration.vibrate(150)
   }
 
   const handleExitConfirmation = () => {
     setShowConfirmation(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
   };
 
   // Función para cancelar la salida (cerrar el modal)
@@ -201,6 +236,23 @@ export default function App() {
           onExit={handleExitApp}
         />
       )}
+
+      {/* Modal de seleccion de dificultad */}
+      <Modal animationType="fade" transparent={true} visible={modalVisible}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Seleccionar Dificultad</Text>
+            {Object.entries(difficulties).map(([key, { name }]) => (
+              <TouchableOpacity key={key} onPress={() => handleStartGame(key)}>
+                <Text style={styles.difficultyButton}>{name}</Text>
+              </TouchableOpacity>
+            ))}
+            <TouchableOpacity onPress={handleCloseModal}>
+              <Text style={styles.difficultyButton}>Cancelar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
       {/* Modal de confirmacion proximo a modularizar*/}
       <Modal
@@ -290,6 +342,18 @@ const styles = StyleSheet.create({
   modalButtonText: {
     color: 'white',
     fontWeight: 'bold',
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  difficultyButton: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    padding: 10,
+    borderWidth: 2,
+    marginBottom: 10
   },
 });
 
