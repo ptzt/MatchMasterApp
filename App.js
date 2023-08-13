@@ -217,8 +217,8 @@ export default function App() {
       {isGameStarted ? (
         <View style={styles.container}>
           {didPlayerWin() && <EmojiRain emoji="🎉" count={50} />}
-          <Text style={styles.title}>{didPlayerWin() ? 'Congratulations 🎉' : ''}</Text>
-          <Text style={styles.subtitle}>Movements: {score}</Text>
+          <Text style={styles.title}>{didPlayerWin() ? 'Felicidades 🎉' : ''}</Text>
+          <Text style={styles.subtitle}>Movimientos: {score}</Text>
           <Board
             key={isGameStarted}
             board={board}

@@ -4,7 +4,7 @@ import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 const ResetButton = ({ onPress }) => {
     return (
         <TouchableOpacity onPress={onPress} style={styles.resetContainer}>
-            <Text style={styles.reset}>reset</Text>
+            <Text style={styles.reset}>Restart</Text>
         </TouchableOpacity>
     );
 }
